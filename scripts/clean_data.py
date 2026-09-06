@@ -68,7 +68,7 @@ def main():
     sheet_rate = 'Grant Rate (Month)'
     
     print("Processing Lodged dataset...")
-    df_lodged = load_and_melt(file_lodged, sheet_lodged, 'Lodged')
+    df_lodged = load_and_melt(file_lodged, sheet_lodged, 'Lodged', header_idx=13)
     
     print("Processing Granted dataset...")
     df_granted = load_and_melt(file_granted, sheet_granted, 'Granted')

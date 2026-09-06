@@ -25,13 +25,26 @@ The data confirms a massive recent policy shift resulting in a severe crackdown 
 ### Grant Rates by Sector
 ![Grant Rates by Sector](images/grant_rates_by_sector.png)
 
-## 4. Technical Architecture & Data Pipeline
+## 4. Socio-Economic Impact & Market Shift
+
+### Massive Surge in Refusals
+The tightening of migration policies led to a massive increase in rejected applications. In the 2025-26 financial year alone, the combined number of refused or withdrawn applications across the two major sectors neared **60,000**, with the VET sector experiencing a **+54.8%** surge in refusals compared to the previous year.
+![Refusals](images/refusals_stacked_bar.png)
+
+### Market Restructuring (Flight to Quality)
+The targeted policy crackdowns have caused a severe structural shift in the Australian international education market. The **Vocational Education and Training (VET)** sector has lost nearly half its market share, plummeting from 21.7% to just **13.1%**. Meanwhile, the **Higher Education** sector has aggressively absorbed this space, now dominating the landscape with a **67.1%** market share, cementing itself as the preferred, lower-risk pathway for students.
+![Market Share](images/market_share_stacked_area.png)
+
+### The $6.72 Billion Economic Deficit
+The abrupt drop in approved visas between the peak (2022-23) and the following year (2023-24) resulted in the loss of **167,921 primary students**. Assuming a conservative annual expenditure of $40,000 AUD per student (tuition and living expenses), this policy shift effectively erased approximately **$6.72 Billion AUD** from the Australian economy in just a single year, heavily impacting the retail, education, and real estate sectors.
+
+## 5. Technical Architecture & Data Pipeline
 The analysis is built on a robust Python data pipeline that handles complex, real-world government datasets. Key engineering tasks included:
 - **Dynamic Header Handling:** The pipeline programmatically detects and bypasses introductory metadata blocks (which varied between row indices 13 and 14 depending on the report).
 - **Pivot-Table Reshaping:** Used Pandas `melt` to transform wide-format Excel pivot tables into a tidy, long-format dataset for time-series analysis.
 - **Data Cleaning & Consolidation:** Employed forward-filling (`ffill()`) for merged Excel cells, stripped hidden string characters, cleaned privacy-masked numeric values (e.g., `<5`), and sequentially merged three separate reports (Lodged, Granted, Grant Rates) into a unified analytical DataFrame.
 
-## 5. How to Reproduce
+## 6. How to Reproduce
 Follow these steps to run the pipeline locally:
 
 1. **Clone the repository** and ensure raw government Excel files are in the `data/raw/` directory.
@@ -43,9 +56,10 @@ Follow these steps to run the pipeline locally:
    ```bash
    python scripts/clean_data.py
    ```
-   *This generates `data/processed/student_visas_summary.csv`.*
-4. **Run the Trend Analysis:**
+4. **Run the Trend & Economic Analysis:**
    ```bash
    python scripts/sector_trends_analysis.py
+   python scripts/refusals_analysis.py
+   python scripts/market_share_analysis.py
+   python scripts/economic_impact.py
    ```
-   *This outputs the statistics to the terminal and generates high-resolution charts in the `images/` folder.*
