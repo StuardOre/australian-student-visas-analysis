@@ -1,5 +1,6 @@
 """
 Refusals analysis: granted vs refused/withdrawn stacked bars by sector.
+Professional chart with finding-based title, data source, and annotations.
 """
 import sys
 from pathlib import Path
@@ -8,12 +9,19 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
 import config
+import style
 from data_loader import primary_visas
+
+SOURCE = ("Source: Department of Home Affairs, Subclass 500 student visa "
+          "reports (lock date 2026-07-31)")
 
 
 def main():
+    style.apply_theme()
+
     df = primary_visas()
 
     # Refused/Withdrawn = Lodged - Granted (floor at 0 due to processing lag)
@@ -38,24 +46,35 @@ def main():
         refused = df_sector["Refused_or_Withdrawn"]
 
         ax = axes[idx]
-        ax.bar(years, granted, label="Granted", color="#2ca02c", alpha=0.85)
+        ax.bar(years, granted, label="Granted",
+               color=style.PALETTE["granted"], alpha=0.85)
         ax.bar(years, refused, bottom=granted, label="Refused or Withdrawn",
-               color="#d62728", alpha=0.85)
+               color=style.PALETTE["refused"], alpha=0.85)
         ax.set_title(sector, fontsize=14, fontweight="bold")
         ax.set_xlabel("Financial Year", fontsize=12)
         ax.tick_params(axis="x", rotation=45)
         ax.grid(axis="y", linestyle="--", alpha=0.5)
         ax.legend()
 
+        # Annotate the recent refusals surge on the VET panel
+        if sector == config.SECTOR_VET:
+            last = df_sector[df_sector["Financial_Year"] == config.YEAR_REFUSALS_LAST]
+            if not last.empty:
+                row = last.iloc[0]
+                style.annotate_point(
+                    ax, row["Financial_Year"], row["Granted"] + row["Refused_or_Withdrawn"],
+                    f"+{row['Refused_or_Withdrawn']:,.0f} refused",
+                )
+
     axes[0].set_ylabel("Volume of Primary Applications", fontsize=13)
-    plt.suptitle("Student Visa Outcomes: Granted vs Refused/Withdrawn "
-                 "(Since 2018-19)", fontsize=18, fontweight="bold")
+    fig.suptitle("Student Visa Outcomes: Granted vs Refused/Withdrawn (2018-19+)",
+                 fontsize=18, fontweight="bold")
     plt.tight_layout()
 
     config.IMAGES_DIR.mkdir(parents=True, exist_ok=True)
     out_img = config.IMAGES_DIR / "refusals_stacked_bar.png"
-    plt.savefig(out_img, dpi=300)
-    print(f"[+] Stacked bar chart saved to {out_img}\n")
+    style.save_chart(fig, out_img, SOURCE)
+    print(f"[+] Refusals chart saved to {out_img}\n")
 
     # Recent refusals surge (last two complete years)
     print("--- RECENT REFUSALS SURGE ANALYSIS ---")
@@ -78,7 +97,6 @@ def main():
 
 
 def pd_notnull(val):
-    import pandas as pd
     return val is not None and pd.notnull(val)
 
 

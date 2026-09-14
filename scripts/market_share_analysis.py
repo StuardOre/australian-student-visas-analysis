@@ -1,5 +1,6 @@
 """
 Market-share analysis: 100% stacked area chart of granted visas by sector.
+Professional chart with finding-based title, data source, and annotations.
 """
 import sys
 from pathlib import Path
@@ -7,13 +8,18 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import matplotlib.pyplot as plt
-import pandas as pd
 
 import config
+import style
 from data_loader import primary_visas, full_years, categorize_sector
+
+SOURCE = ("Source: Department of Home Affairs, Subclass 500 student visa "
+          "reports (lock date 2026-07-31)")
 
 
 def main():
+    style.apply_theme()
+
     df = primary_visas()
 
     # Market-share window, excluding the partial year
@@ -31,7 +37,7 @@ def main():
     pivot_pct = pivot.div(pivot.sum(axis=1), axis=0) * 100
 
     # Plot
-    fig, ax = plt.subplots(figsize=(12, 6))
+    fig, ax = plt.subplots(figsize=(style.FIGWIDTH, style.FIGHEIGHT))
     years = pivot_pct.index
     ax.stackplot(
         years,
@@ -39,29 +45,38 @@ def main():
         pivot_pct["VET"],
         pivot_pct["Other Sectors"],
         labels=["Higher Education", "VET", "Other Sectors"],
-        colors=["#1f77b4", "#ff7f0e", "#7f7f7f"],
+        colors=[style.PALETTE["higher_ed"], style.PALETTE["vet"], style.PALETTE["other"]],
         alpha=0.85,
     )
-    ax.set_title("100% Market Share of Granted Student Visas "
-                 "(2015 - 2026)", fontsize=15, fontweight="bold")
+    ax.set_title("Market Restructuring: VET Share Nearly Halved (2015-2026)",
+                 fontsize=16, fontweight="bold")
     ax.set_xlabel("Financial Year", fontsize=12)
     ax.set_ylabel("Market Share (%)", fontsize=12)
     ax.set_xlim(years[0], years[-1])
     ax.set_ylim(0, 100)
-    plt.xticks(rotation=45)
     ax.legend(loc="center left", bbox_to_anchor=(1, 0.5), title="Education Sector")
-    plt.tight_layout()
+    style.tidy_x_ticks(ax)
+
+    # Annotate the VET share collapse
+    vet_start = pivot_pct.loc[config.MARKET_SHARE_START, "VET"]
+    vet_end = pivot_pct.loc[years[-1], "VET"]
+    style.annotate_point(
+        ax, config.MARKET_SHARE_START, vet_start,
+        f"VET start: {vet_start:.1f}%",
+    )
+    style.annotate_point(
+        ax, years[-1], vet_end,
+        f"VET end: {vet_end:.1f}%",
+    )
 
     config.IMAGES_DIR.mkdir(parents=True, exist_ok=True)
     out_img = config.IMAGES_DIR / "market_share_stacked_area.png"
-    plt.savefig(out_img, dpi=300)
-    print(f"[+] 100% Stacked Area Chart saved to {out_img}\n")
+    style.save_chart(fig, out_img, SOURCE)
+    print(f"[+] Market share chart saved to {out_img}\n")
 
     # Analytical conclusion
     year_start = config.MARKET_SHARE_START
     year_end = years[-1]
-    vet_start = pivot_pct.loc[year_start, "VET"]
-    vet_end = pivot_pct.loc[year_end, "VET"]
     he_start = pivot_pct.loc[year_start, "Higher Education"]
     he_end = pivot_pct.loc[year_end, "Higher Education"]
 
