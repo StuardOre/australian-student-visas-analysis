@@ -13,9 +13,11 @@ Following the reopening of international borders, Australia experienced an unpre
 - **Vocational Education and Training (VET) Sector:** Surged even faster at **+49.0%** (from 86,121 to 128,334).
 
 ### Targeted Policy Tightening
-The data confirms a massive recent policy shift resulting in a severe crackdown on approval rates. However, this crackdown is highly targeted:
-- **Higher Education** approval rates dropped by **-16.7 percentage points** (down to 70.8%).
-- **VET Sector** suffered a dramatic decline, plummeting by **-28.6 percentage points** (down to a historic low of **48.4%**). This clearly indicates that the government's recent visa tightening is disproportionately focused on the vocational education sector.
+Comparing the 2022-23 peak with the last complete financial year (2025-26), the recent tightening is highly targeted:
+- **Higher Education** grant rates fell by **3.5 percentage points** (87.5% → 84.0%).
+- **VET Sector** grant rates fell by **24.8 percentage points** (77.0% → **52.2%**), the lowest level in the 20-year series. The recent visa tightening is disproportionately focused on the vocational education sector.
+
+*Grant rates are compared on complete financial years only. A partial year (for example, a single month of 2026-27) can swing much further, so it is excluded from these figures and from the charts.*
 
 ## 3. Policy Timeline Analysis
 To connect policy decisions with observed outcomes, the analysis overlays major regulatory events on the granted-volume trend (`scripts/policy_timeline.py`):
@@ -51,7 +53,7 @@ The targeted policy crackdowns have caused a severe structural shift in the Aust
 ![Market Share](images/market_share_stacked_area.png)
 
 ### The $6.72 Billion Economic Deficit
-The abrupt drop in approved visas between the peak (2022-23) and the following year (2023-24) resulted in the loss of **167,921 primary students**. Assuming a conservative annual expenditure of $40,000 AUD per student (tuition and living expenses), this policy shift effectively erased approximately **$6.72 Billion AUD** from the Australian economy in just a single year, heavily impacting the retail, education, and real estate sectors.
+The abrupt drop in approved visas between the peak (2022-23) and the following year (2023-24) resulted in **167,921 fewer primary student visas granted** across all education sectors (499,696 → 331,775). Assuming a conservative annual expenditure of $40,000 AUD per student (tuition and living expenses), this policy shift effectively erased approximately **$6.72 Billion AUD** from the Australian economy in just a single year, heavily impacting the retail, education, and real estate sectors.
 
 ## 6. Methodology
 
